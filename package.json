@@ -1,0 +1,54 @@
+{
+  "name": "astro-mail-obfuscation",
+  "version": "2.0.0",
+  "description": "An Astro integration that obfuscates email addresses in the source code by encoding them. The email addresses are only decoded and displayed on the client side using JavaScript, which helps protect against basic email scraping bots.",
+  "homepage": "https://www.npmjs.com/package/astro-mail-obfuscation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andreas-brunner/astro-mail-obfuscation"
+  },
+  "author": "Andreas Brunner <opensource@brunner-andreas.de>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "keywords": [
+    "astro",
+    "astro-component",
+    "astro-integration",
+    "withastro",
+    "email-obfuscation",
+    "email-protection",
+    "spam-protection",
+    "bot-protection",
+    "email-security",
+    "security",
+    "obfuscation",
+    "encoding",
+    "utils",
+    "utility"
+  ],
+  "scripts": {
+    "build": "tsc && mkdir -p dist/scripts && cp -r src/scripts/* dist/scripts/ && terser dist/index.js -o dist/index.js && terser dist/scripts/decodation.js -o dist/scripts/decodation.js"
+  },
+  "peerDependencies": {
+    "astro": ">=4.10.0"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "globby": "^14.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.7",
+    "astro": "4.16.6",
+    "terser": "^5.36.0",
+    "typescript": "^5.6.3"
+  }
+}
