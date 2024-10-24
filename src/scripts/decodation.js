@@ -1,56 +1,59 @@
 // ---
-// data-62814357 = Encrypted email (mailto:...).
+// data-62814357 = Encrypted email (mailto:..., tel:...).
 // data-81609423 = Encrypted HTML content.
 // ---
-// AstroMailObfuscation - Client
+// Astro-Mail-Obfuscation - CLIENT:
 // This class handles the decoding and display of obfuscated
-// email addresses stored in encrypted form in the HTML.
+// emails/phones stored in encrypted form in the HTML.
 // It uses a simple XOR-based decryption method and transforms
-// the obfuscated emails into anchor tags ('<a>') with 'mailto' links.
+// the obfuscated emails/phones into anchor tags ("<a>") with "mailto:"/"tel:" links.
 // ---
 class AstroMailObfuscation {
   // ---
-  // Constructor
+  // Constructor:
   // Initializes the script and sets up the DOMContentLoaded listener.
   // ---
   constructor() {
     document.addEventListener("DOMContentLoaded", () => this.obfuscateEmails());
+    // Register astro:after-swap event to handle view transitions.
+    document.addEventListener("astro:after-swap", () => this.obfuscateEmails());
   }
   // ---
-  // Main method that finds all obfuscated email elements and decrypts them.
+  // Main method that finds all obfuscated emails/phones elements and decrypts them.
   // ---
   obfuscateEmails() {
-    // Select all elements with the encrypted email attribute
-    const emailElements = document.querySelectorAll("[data-62814357]");
-    if (!emailElements.length) return; // If no elements are found, exit early
-    // Get the encryption key
+    // Select all elements with the encrypted emails/phones attribute.
+    const elements = document.querySelectorAll("[data-62814357]");
+    if (!elements.length) return; // If no elements are found, exit early.
+    // Get the encryption key.
     const encryptionKey = this.getEncryptionKey();
     if (!encryptionKey) {
-      console.error("astro-mail-obfuscation: missing or invalid encryption key.");
+      console.error("Astro-Mail-Obfuscation: Missing or invalid encryption key.");
       return;
     }
-    // Loop through all found email elements
-    emailElements.forEach((el) => {
-      const encryptedEmail = el.getAttribute("data-62814357");
+    // Loop through all found elements.
+    elements.forEach((el) => {
+      const encryptedContact = el.getAttribute("data-62814357");
       const encryptedHtml = el.getAttribute("data-81609423");
-      // If encrypted email or HTML is missing, skip this element
-      if (!encryptedEmail || !encryptedHtml) {
-        console.warn("astro-mail-obfuscation: missing email or HTML data.");
+      // If encrypted contact or HTML is missing, skip this element.
+      if (!encryptedContact || !encryptedHtml) {
+        console.warn("Astro-Mail-Obfuscation: Missing contact or HTML data.");
         return;
       }
-      // Decrypt the email and HTML content
-      const email = this.decryptContent(encryptedEmail, encryptionKey);
+      // Decrypt the contact (emails/phones) and HTML content.
+      const contactInfo = this.decryptContent(encryptedContact, encryptionKey);
       const originalHtml = this.decryptContent(encryptedHtml, encryptionKey);
-      if (!email || !originalHtml) return; // If decryption failed, skip further processing
-      // Find the closest anchor tag to the current element and update the href
+      if (!contactInfo || !originalHtml) return; // If decryption failed, skip further processing.
+      // Find the closest anchor tag to the current element and update the href.
       const anchor = el.closest("a");
       if (anchor) {
-        // Set the mailto link
-        anchor.href = `mailto:${email}`;
-        // Replace the encrypted HTML with the decrypted content (interpreted as HTML)
+        // Set the "mailto:"/"tel:" link based on the contact info.
+        const isEmail = /^[^@]+@[^@]+\.[^@]+$/.test(contactInfo);
+        anchor.href = isEmail ? `mailto:${contactInfo}` : `tel:${contactInfo}`;
+        // Replace the encrypted HTML with the decrypted content (interpreted as HTML).
         anchor.innerHTML = originalHtml;
       } else {
-        console.warn("astro-mail-obfuscation: no valid anchor tag found.");
+        console.warn("Astro-Mail-Obfuscation: No valid anchor tag found.");
       }
     });
   }
@@ -62,7 +65,7 @@ class AstroMailObfuscation {
     const metaTag = document.querySelector('meta[name="26435710"]');
     const key = metaTag ? metaTag.getAttribute("content") : null;
     if (!key) {
-      console.error("astro-mail-obfuscation: encryption key is missing or malformed.");
+      console.error("Astro-Mail-Obfuscation: Encryption key is missing or malformed.");
     }
     return key;
   }
@@ -75,7 +78,7 @@ class AstroMailObfuscation {
   // ---
   decryptContent(encrypted, key) {
     if (!encrypted || !key) {
-      console.error("astro-mail-obfuscation: invalid input for decryption.");
+      console.error("Astro-Mail-Obfuscation: Invalid input for decryption.");
       return null;
     }
     try {
@@ -87,10 +90,10 @@ class AstroMailObfuscation {
       }
       return result;
     } catch (err) {
-      console.error("astro-mail-obfuscation: decryption failed.", err);
+      console.error("Astro-Mail-Obfuscation: Decryption failed.", err);
       return null;
     }
   }
 }
-// Initialize and activate the obfuscation logic
+// Initialize/activate the obfuscation logic.
 new AstroMailObfuscation();

@@ -1,7 +1,7 @@
 {
   "name": "astro-mail-obfuscation",
-  "version": "2.0.0",
-  "description": "An Astro integration that obfuscates email addresses in the source code by encoding them. The email addresses are only decoded and displayed on the client side using JavaScript, which helps protect against basic email scraping bots.",
+  "version": "2.1.0",
+  "description": "Obfuscates email addresses and phone numbers in the source code to protect against scraping bots. Decodes and displays them client-side using JavaScript.",
   "homepage": "https://www.npmjs.com/package/astro-mail-obfuscation",
   "repository": {
     "type": "git",
@@ -39,16 +39,22 @@
     "build": "tsc && mkdir -p dist/scripts && cp -r src/scripts/* dist/scripts/ && terser dist/index.js -o dist/index.js && terser dist/scripts/decodation.js -o dist/scripts/decodation.js"
   },
   "peerDependencies": {
-    "astro": ">=4.10.0"
+    "astro": ">=4.0.0"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
     "globby": "^14.0.2"
   },
   "devDependencies": {
+    "eslint": "^9.13.0",
+    "@eslint/js": "^9.13.0",
+    "@typescript-eslint/eslint-plugin": "^8.11.0",
+    "@typescript-eslint/parser": "^8.11.0",
+    "eslint-plugin-security": "^3.0.1",
+    "globals": "^15.11.0",
+    "snyk": "^1.1294.0",
+    "typescript": "^5.6.3",
     "@types/node": "^22.7.7",
-    "astro": "4.16.6",
-    "terser": "^5.36.0",
-    "typescript": "^5.6.3"
+    "terser": "^5.36.0"
   }
 }
