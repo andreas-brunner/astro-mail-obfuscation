@@ -1,11 +1,11 @@
 {
   "name": "astro-mail-obfuscation",
-  "version": "2.1.0",
-  "description": "Obfuscates email addresses and phone numbers in the source code to protect against scraping bots. Decodes and displays them client-side using JavaScript.",
-  "homepage": "https://www.npmjs.com/package/astro-mail-obfuscation",
+  "version": "2.2.0",
+  "description": "Protect email addresses and phone numbers in the source code of your Astro app by disguising them.",
+  "homepage": "https://github.com/andreas-brunner/astro-mail-obfuscation",
   "repository": {
     "type": "git",
-    "url": "https://github.com/andreas-brunner/astro-mail-obfuscation"
+    "url": "https://github.com/andreas-brunner/astro-mail-obfuscation.git"
   },
   "author": "Andreas Brunner <opensource@brunner-andreas.de>",
   "license": "MIT",
@@ -13,11 +13,16 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
   "files": [
     "dist/**/*",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "keywords": [
     "astro",
@@ -36,25 +41,28 @@
     "utility"
   ],
   "scripts": {
-    "build": "tsc && mkdir -p dist/scripts && cp -r src/scripts/* dist/scripts/ && terser dist/index.js -o dist/index.js && terser dist/scripts/decodation.js -o dist/scripts/decodation.js"
+    "build": "tsc && terser dist/index.js -o dist/index.js && terser dist/scripts/client.js -o dist/scripts/client.js",
+    "lint": "eslint 'src/**/*.{ts,tsx}'"
   },
   "peerDependencies": {
     "astro": ">=4.0.0"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
-    "globby": "^14.0.2"
+    "globby": "^14.0.2",
+    "p-limit": "^6.1.0"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/node": "^22.8.1",
+    "@typescript-eslint/eslint-plugin": "^8.12.0",
+    "@typescript-eslint/parser": "^8.12.0",
     "eslint": "^9.13.0",
-    "@eslint/js": "^9.13.0",
-    "@typescript-eslint/eslint-plugin": "^8.11.0",
-    "@typescript-eslint/parser": "^8.11.0",
     "eslint-plugin-security": "^3.0.1",
-    "globals": "^15.11.0",
-    "snyk": "^1.1294.0",
-    "typescript": "^5.6.3",
-    "@types/node": "^22.7.7",
-    "terser": "^5.36.0"
+    "terser": "^5.36.0",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20.3.0"
   }
 }

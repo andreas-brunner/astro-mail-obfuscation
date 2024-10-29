@@ -1,19 +1,23 @@
 {
   "compilerOptions": {
-    "module": "Node16",
-    "moduleResolution": "node16",
     "target": "ESNext",
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "lib": ["ESNext", "DOM"],
     "declaration": true,
     "outDir": "dist",
     "rootDir": "src",
+    "strict": true,
+    "noImplicitAny": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "noImplicitAny": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
+    "types": ["node"],
+    "allowJs": false,
+    "resolveJsonModule": false,
+    "isolatedModules": true,
     "sourceMap": false
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
