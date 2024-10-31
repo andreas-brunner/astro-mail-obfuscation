@@ -1,6 +1,6 @@
 # Astro Mail Obfuscation
 
-🛡️ **v2.3.0:** Now you can obfuscate any content you want!
+🛡️ **v2.3.2:** Now you can obfuscate any content you want!
 
 Astro Mail Obfuscation allows you to protect email addresses, phone numbers, names, and other sensitive information in the source code of your Astro website from spam bots. You can manually select one of three obfuscation methods, or activate automatic mode for added variety and improved protection.
 
@@ -40,7 +40,7 @@ HTML tags without the `data-obfuscation` attribute will not be obfuscated.
 
 Each obfuscation method relies on XOR-based encoding, augmented with additional keys. These methods vary in how the encoded content is represented, making it challenging for bots to recognize a consistent pattern in obfuscated text.
 
-> **Supported HTML tags:** `h1` - `h6`, `p`, `a`, `label`, `ul`, `ol`, `li`, `strong`, `b`, `em`, `i`, `span`.
+> **Supported tags:** `h1` - `h6`, `p`, `a`, `label`, `ul`, `ol`, `li`, `strong`, `b`, `em`, `i`, `span`.
 
 The `href` attribute in `a` tags is also obfuscated.
 
