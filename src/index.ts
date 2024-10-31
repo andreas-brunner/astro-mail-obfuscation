@@ -29,7 +29,7 @@ function generateUserSalt(length: number): string {
 /**
  * Default allowed tags for obfuscation.
  */
-const defaultAllowedTags = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "a", "label", "ul", "ol", "li", "strong", "b", "em", "i"];
+const defaultAllowedTags = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "a", "label", "ul", "ol", "li", "strong", "b", "em", "i", "span"];
 /**
  * Interface defining the options for the Astro Mail Obfuscation integration.
  */

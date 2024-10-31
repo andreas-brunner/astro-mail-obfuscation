@@ -4,7 +4,7 @@
 
 Astro Mail Obfuscation allows you to protect email addresses, phone numbers, names, and other sensitive information in the source code of your Astro website from spam bots. You can manually select one of three obfuscation methods, or activate automatic mode for added variety and improved protection.
 
-Currently, 16 HTML tags are officially supported (e.g., `a`, `p`, `span`, ...), though additional tags can be added to your configuration as needed. Developed with a focus on stability, reliability, and performance, this integration also seamlessly supports Astro’s `ViewTransition`.
+Currently, 17 HTML tags are officially supported (e.g., `a`, `p`, `span`, ...), though additional tags can be added to your configuration as needed. Developed with a focus on stability, reliability, and performance, this integration also seamlessly supports Astro’s `ViewTransition`.
 
 > **Note:** Server-Side Rendering (SSR) is currently not supported.
 
@@ -40,7 +40,7 @@ HTML tags without the `data-obfuscation` attribute will not be obfuscated.
 
 Each obfuscation method relies on XOR-based encoding, augmented with additional keys. These methods vary in how the encoded content is represented, making it challenging for bots to recognize a consistent pattern in obfuscated text.
 
-> **Supported HTML tags:** `h1` - `h6`, `p`, `a`, `label`, `ul`, `ol`, `li`, `strong`, `b`, `em`, `i`.
+> **Supported HTML tags:** `h1` - `h6`, `p`, `a`, `label`, `ul`, `ol`, `li`, `strong`, `b`, `em`, `i`, `span`.
 
 The `href` attribute in `a` tags is also obfuscated.
 
@@ -68,7 +68,7 @@ export default defineConfig({
 
 The `fallbackText` displays if JavaScript is disabled in the browser. During the build process, `userKey` and `userSalt` are automatically generated. If setting `userSalt` manually, ensure it is exactly 8 characters long. The `userKey` and `userSalt` values are stored as meta tags in the pages during the build, allowing the client-side script to unobfuscate the content.
 
-Take care when adjusting `concurrencyLimit`; setting it too high can affect stability. By default, 16 HTML tags are supported, though additional tags can be added to the `allowedTags` array for extended obfuscation coverage.
+Take care when adjusting `concurrencyLimit`; setting it too high can affect stability. By default, 17 HTML tags are supported, though additional tags can be added to the `allowedTags` array for extended obfuscation coverage.
 
 > **Recommendation:** In most cases, only `fallbackText` needs customization. The default settings are optimized for reliable operation without further adjustments.
 
