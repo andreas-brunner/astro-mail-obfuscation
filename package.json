@@ -1,8 +1,8 @@
 {
   "name": "astro-mail-obfuscation",
-  "version": "2.2.0",
-  "description": "Protect email addresses and phone numbers in the source code of your Astro app by disguising them.",
-  "homepage": "https://github.com/andreas-brunner/astro-mail-obfuscation",
+  "version": "2.3.0",
+  "description": "Protect email addresses, phone numbers, and other sensitive data from bots scraping the source code of your Astro apps.",
+  "homepage": "https://www.npmjs.com/package/astro-mail-obfuscation",
   "repository": {
     "type": "git",
     "url": "https://github.com/andreas-brunner/astro-mail-obfuscation.git"
@@ -63,6 +63,6 @@
     "typescript": "^5.6.3"
   },
   "engines": {
-    "node": ">=20.3.0"
+    "node": ">=18.17.1"
   }
 }
