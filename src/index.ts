@@ -208,7 +208,7 @@ const encryptionMethods: Record<
         for (let i = 0; i < contentBuffer.length; i++) {
           xorResult[i] = contentBuffer[i] ^ keyBuffer[i % keyBuffer.length];
         }
-        let base64 = xorResult.toString("base64");
+        const base64 = xorResult.toString("base64");
         // Optionally reverse the Base64 string based on key characters.
         const shouldReverse = key.charCodeAt(key.length - 1) > key.charCodeAt(key.length - 2);
         return shouldReverse ? base64.split("").reverse().join("") : base64;

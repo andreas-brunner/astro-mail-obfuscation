@@ -1,6 +1,6 @@
 {
   "name": "astro-mail-obfuscation",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "Protect email addresses, phone numbers, and other sensitive data from bots scraping the source code of your Astro apps.",
   "homepage": "https://www.npmjs.com/package/astro-mail-obfuscation",
   "repository": {
