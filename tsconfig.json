@@ -1,23 +1,19 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "lib": ["ESNext", "DOM"],
-    "declaration": true,
-    "outDir": "dist",
-    "rootDir": "src",
-    "strict": true,
-    "noImplicitAny": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "types": ["node"],
-    "allowJs": false,
-    "resolveJsonModule": false,
-    "isolatedModules": true,
-    "sourceMap": false
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+    "compilerOptions": {
+        "target": "ES2022",
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "module": "NodeNext",
+        "declaration": true,
+        "isolatedDeclarations": true,
+        "noEmit": true,
+        "verbatimModuleSyntax": true,
+        "types": ["node"],
+        "skipLibCheck": true,
+        "exactOptionalPropertyTypes": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "erasableSyntaxOnly": true
+    },
+    "include": ["src/**/*.ts"]
 }

@@ -1,0 +1,9 @@
+{
+    "name": "astro-mail-obfuscation",
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:4-24-trixie",
+    "customizations": {
+        "vscode": {
+            "extensions": ["oxc.oxc-vscode"]
+        }
+    }
+}

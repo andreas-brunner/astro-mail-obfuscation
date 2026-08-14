@@ -1,68 +1,76 @@
 {
-  "name": "astro-mail-obfuscation",
-  "version": "2.3.4",
-  "description": "Protect email addresses, phone numbers and other sensitive data from bots scraping the source code of your Astro app.",
-  "homepage": "https://www.npmjs.com/package/astro-mail-obfuscation",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/andreas-brunner/astro-mail-obfuscation.git"
-  },
-  "author": "Andreas Brunner <opensource@brunner-andreas.de>",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+    "name": "astro-mail-obfuscation",
+    "version": "3.0.0",
+    "description": "Protect emails, phone numbers, & other content from bots using AES-GCM obfuscation for Astro/Starlight (SSR/SSG).",
+    "keywords": [
+        "anti-scraping",
+        "astro",
+        "astro-integration",
+        "data-obfuscation",
+        "email-harvesting",
+        "email-obfuscation",
+        "email-protection",
+        "email-scraping",
+        "starlight",
+        "utility"
+    ],
+    "homepage": "https://github.com/andreas-brunner/astro-mail-obfuscation",
+    "bugs": {
+        "url": "https://github.com/andreas-brunner/astro-mail-obfuscation/issues"
+    },
+    "license": "MIT",
+    "author": "Andreas Brunner <opensource@brunner-andreas.de>",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/andreas-brunner/astro-mail-obfuscation.git"
+    },
+    "files": [
+        "dist"
+    ],
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsdown",
+        "check": "npm run build && npm run check:format && npm run check:lint && npm run check:types && npm run check:attw && npm run check:publint && npm run check:knip && npm run check:jscpd",
+        "check:attw": "attw --pack . --profile esm-only",
+        "check:format": "oxfmt --check .",
+        "check:jscpd": "jscpd --threshold 0 ./src",
+        "check:knip": "knip",
+        "check:lint": "oxlint .",
+        "check:publint": "publint --pack npm --strict",
+        "check:types": "tsc --noEmit"
+    },
+    "dependencies": {
+        "cheerio": "^1.2.0",
+        "domhandler": "^6.0.1",
+        "javascript-obfuscator": "^5.5.0"
+    },
+    "devDependencies": {
+        "@arethetypeswrong/cli": "^0.18.5",
+        "@types/node": "^22",
+        "jscpd": "^5.0.15",
+        "knip": "^6.32.2",
+        "oxfmt": "^0.63.0",
+        "oxlint": "^1.78.0",
+        "oxlint-tsgolint": "^7.0.2001",
+        "publint": "^0.3.23",
+        "tsdown": "^0.22.14",
+        "typescript": "^6.0.3"
+    },
+    "peerDependencies": {
+        "astro": ">=5.0.0 <8.0.0"
+    },
+    "engines": {
+        "node": ">=22.12.0"
+    },
+    "allowScripts": {
+        "esbuild@0.28.2": true
     }
-  },
-  "files": [
-    "dist/**/*",
-    "README.md",
-    "LICENSE"
-  ],
-  "keywords": [
-    "astro",
-    "astro-component",
-    "astro-integration",
-    "withastro",
-    "email-obfuscation",
-    "email-protection",
-    "spam-protection",
-    "bot-protection",
-    "email-security",
-    "security",
-    "obfuscation",
-    "encoding",
-    "utils",
-    "utility"
-  ],
-  "scripts": {
-    "build": "tsc && terser dist/index.js -o dist/index.js && terser dist/scripts/client.js -o dist/scripts/client.js",
-    "lint": "eslint 'src/**/*.{ts,tsx}'"
-  },
-  "peerDependencies": {
-    "astro": ">=4.0.0"
-  },
-  "dependencies": {
-    "cheerio": "^1.0.0",
-    "globby": "^14.0.2",
-    "p-limit": "^6.1.0"
-  },
-  "devDependencies": {
-    "@types/cheerio": "^0.22.35",
-    "@types/node": "^22.8.1",
-    "@typescript-eslint/eslint-plugin": "^8.12.0",
-    "@typescript-eslint/parser": "^8.12.0",
-    "eslint": "^9.13.0",
-    "eslint-plugin-security": "^3.0.1",
-    "terser": "^5.36.0",
-    "typescript": "^5.6.3"
-  },
-  "engines": {
-    "node": ">=18.17.1"
-  }
 }

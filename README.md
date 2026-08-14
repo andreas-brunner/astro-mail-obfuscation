@@ -1,79 +1,176 @@
 # Astro Mail Obfuscation
 
-[![CodeFactor](https://www.codefactor.io/repository/github/andreas-brunner/astro-mail-obfuscation/badge)](https://www.codefactor.io/repository/github/andreas-brunner/astro-mail-obfuscation)
+![npm Total Downloads](https://www.shieldcn.dev/npm/dt/astro-mail-obfuscation.svg?variant=default&size=sm&mode=dark&font=space-grotesk&labelColor=151b23&labelTextColor=9198a1&valueColor=7ee787) ![npm Version](https://www.shieldcn.dev/npm/astro-mail-obfuscation.svg?variant=default&size=sm&mode=dark&font=space-grotesk&labelColor=151b23&labelTextColor=9198a1&valueColor=a5d6ff)
 
-**Supported HTML tags:** `h1`-`h6`, `p`, `span`, `a`, `label`, `ul`, `ol`, `li`, `strong`, `b`, `em`, `i`.
+> **v3**: **Rebuilt**. Advanced content obfuscator for [Astro](https://astro.build/) and [Starlight](https://starlight.astro.build/).
 
-This Astro integration effectively prevents spam bots from extracting email addresses, phone numbers or other sensitive data from the source code of your website. You can manually select one of three methods or activate random mode to increase variation and make it harder for bots to extract data. The integration has been designed with a focus on stability, reliability, performance and seamless support for `<ViewTransitions />`.
+Bots crawl the web for email addresses, phone numbers, and other sensitive data. This can result in spam emails, unwanted calls, and other forms of abuse.
 
-> **Important:** Server-side rendering is currently not supported.
+Such abuse becomes more profitable when data is cheap to extract. Astro Mail Obfuscation disrupts this by blocking low-cost extraction paths.
+
+The integration uses AES-GCM and ECDSA. It works with [`<ClientRouter />`](https://docs.astro.build/en/guides/view-transitions/), SSR, and SSG. Trusted Types are supported. [`JavaScript Obfuscator`](https://github.com/javascript-obfuscator/javascript-obfuscator) randomizes the client runtime on every build, removing patterns bots rely on.
+
+## Source Comparison
+
+**Without**:
+
+```html
+<a href="tel:+498999998000">+49 89 99998 000</a>
+```
+
+**With Astro Mail Obfuscation**:
+
+```html
+<a data-c8c327ad7b16="IcB8lePUuQlN..."></a>
+```
+
+JavaScript restores the content on the client side.
 
 ## Installation
 
-Install (recommended via Astro CLI):
+> Requires Node.js `>=22.12.0`, Astro `>=5.0.0 <8.0.0`, and a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Secure_Contexts) (localhost or HTTPS).
+
+**Astro CLI** (recommended):
 
 ```bash
 npx astro add astro-mail-obfuscation
 ```
 
-## Usage
+**Manual**:
 
-Add the `data-obfuscation` attribute to any HTML tag containing sensitive content to obfuscate it during the build process. You can use the values `"1"`, `"2"` or `"3"` to manually select the method for the respective tag. Alternatively, you can use `"0"` to specify that the integration automatically selects one of the three methods at random during the build, which increases variability and makes interpretation by simple bots even more difficult.
-
-**Examples:**
-
-```html
-<!-- Manually select obfuscation method: -->
-<a href="mailto:info@..." data-obfuscation="1">info@...</a>
-<a href="tel:0123..." data-obfuscation="2">0123...</a>
-<p>...<span data-obfuscation="3">info@...</span>...</p>
-<!-- Automatically select a random obfuscation method: -->
-<ul data-obfuscation="0">
-  <li>John Doe</li>
-  <li>Jane Doe</li>
-</ul>
-<label data-obfuscation="0">info@...</label>
-<!-- ... -->
+```bash
+npm install astro-mail-obfuscation
+# or pnpm add / yarn add / bun add
 ```
-
-> **Information:** HTML tags that do not contain the `data-obfuscation` attribute are not obfuscated. This can be useful in certain situations (e.g. GDPR).
-
-## Methods
-
-The integration provides three XOR-based methods for obfuscation:
-
-- **Method "1":** XOR with `userKey`, resulting in hexadecimal encoding.
-- **Method "2":** XOR with `userKey`, resulting in Base64 encoding (dynamically reversed).
-- **Method "3":** XOR with `userKey` and `userSalt`, resulting in Base62 encoding.
-
-Each method uses XOR-based encoding with additional keys to vary how the content is represented, making it harder for simpler bots to detect patterns. For increased variability, `data-obfuscation="0"` enables automatic mode, which randomly selects a method during the build to further complicate bot interpretation.
-
-## Configuration
-
-This integration **works out of the box with no required setup**.
-
-Nevertheless, a few settings can be made to control the behavior of the integration:
 
 ```js
 // astro.config.mjs
+import { defineConfig } from "astro/config";
+
 import mailObfuscation from "astro-mail-obfuscation";
+
 export default defineConfig({
-  integrations: [
-    mailObfuscation({
-      fallbackText: "Please enable JavaScript!", // Default: "[PROTECTED!]"
-      // userKey: "...", // Automatically generated
-      // userSalt: "...", // Automatically generated (must be 8 characters if set manually)
-      // concurrencyLimit: number, // Max concurrent tasks, default: 5 (p-limit)
-      // allowedTags: ["button", "..."] // Add unsupported HTML tags to the whitelist
-    }),
-  ],
+    integrations: [mailObfuscation()],
 });
 ```
 
-The `fallbackText` is displayed if the user has deactivated JavaScript in the browser. Whenever you run the build process, `userKey` and `userSalt` are automatically regenerated by default. If you still want to set static values within your Astro configuration, please note that the `userSalt` must be exactly 8 characters long. The length of the `userKey`, on the other hand, is not limited. The `userKey` and `userSalt` are set as a meta tag on all pages during the build process to make them accessible to the client-side JavaScript. Please change the `concurrencyLimit` with caution, as a value that is too high could affect stability. By default, 17 HTML tags are supported, but if you still need support for more tags, add them to the `allowedTags` array.
+**Migration from v2 to v3**:
 
-> **Recommendation:** In most cases, only the `fallbackText` needs to be adjusted. The default settings are already optimized for stable use.
+Remove all deprecated options from `mailObfuscation()` in `astro.config.mjs`. Marker values are no longer evaluated; change `data-obfuscation="..."` to `data-obfuscation`.
 
-## Limitations
+## Usage
 
-While the majority of basic bots cannot execute JavaScript, this integration provides an effective and practical level of protection against simpler, more common bots. Astro Mail Obfuscation is a client-side solution that is particularly ideal for use on static sites.
+Add the `data-obfuscation` marker to any HTML content element:
+
+```html
+<a href="mailto:john.doe@example.com" data-obfuscation>
+    <span>john.doe@example.com</span>
+</a>
+
+<p>Tax ID: <span data-obfuscation>[TAX_ID]</span></p>
+
+<address data-obfuscation>
+    John Doe's Placeholder Emporium<br />
+    [STREET]<br />
+    [POSTAL_CODE], [CITY]<br />
+    [COUNTRY]
+</address>
+```
+
+> Do not nest `data-obfuscation` or include `<noscript>` in obfuscated content. Do not obfuscate `<astro-island>` or its contents, and do not use custom elements as marked roots.
+
+On the marked root element, all attributes except critical ones (e.g., `id`, `class`, `style`, `hidden`) are obfuscated.
+
+**Optional**:
+
+Provide a non-obfuscated fallback for users without JavaScript:
+
+```html
+<div>
+    <a href="mailto:..." data-obfuscation>
+        <span>...</span>
+    </a>
+    <noscript>Please enable JavaScript.</noscript>
+</div>
+```
+
+> Do not put sensitive data inside `<noscript>`; use it only for a general notice.
+
+To replace the default marker, set `markerAttributeName`:
+
+```js
+// astro.config.mjs
+mailObfuscation({
+    markerAttributeName: "data-shield", // /^data-[a-z0-9_-]+$/
+});
+```
+
+```html
+<a href="mailto:..." data-shield>...</a>
+```
+
+## Architecture
+
+```mermaid
+%% Semantics < Appearance
+stateDiagram-v2
+    state "Mail_Obfuscation_Server" as Server
+    state "Mail_Obfuscation_Vite" as Vite
+    state "Mail_Obfuscation_Client" as Client
+    state "AES-GCM" as Restoration
+
+    [*] --> Server: SETUP
+    Server --> Middleware: AES_KEY + ECDSA_PRIVATE_KEY
+    Middleware --> HTML_Source: ENCRYPTED + SIGNED PAYLOAD
+    Server --> Client: AES_KEY + ECDSA_PUBLIC_KEY
+    Vite --> Client: OBFUSCATED RUNTIME
+    HTML_Source --> Client
+    Client --> BLOCKED: ECDSA:REJECTED
+    Client --> Restoration: ECDSA:VERIFIED
+    Restoration --> [*]: RESTORED
+```
+
+The client runtime needs the `AES_KEY` to decrypt the payload. Because the same key can also be used to create a valid modified payload, [AES-GCM](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#aes-gcm) alone cannot verify where the payload came from.
+
+[ECDSA](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign#ecdsa) provides this verification. The client runtime receives only the `ECDSA_PUBLIC_KEY`, while the `ECDSA_PRIVATE_KEY` used to sign the initialization vector (IV) and encrypted payload remains on the build/server side.
+
+**SSR Behavior**:
+
+In SSR mode, HTML responses are buffered.
+
+This is required because the integration needs the complete HTML document for validation and transformation. As a result, [HTML streaming](https://docs.astro.build/en/guides/on-demand-rendering/#html-streaming) is not preserved.
+
+> The middleware does not parse or reserialize marker-free HTML, and [`Cheerio`](https://github.com/cheeriojs/cheerio) is loaded lazily. All HTML responses are still inspected, and the small client runtime is injected on every page.
+
+## Threat Model
+
+> Obfuscation is not security. Instead, it raises the cost of automated data extraction.
+
+Astro Mail Obfuscation protects against crawlers and scrapers that inspect raw HTML. It disrupts tools that rely on predictable patterns or static extractors.
+
+Because the integration randomizes its client runtime and regenerates identifiers and cryptographic keys on every build, a single static extractor becomes significantly harder to reuse across sites and builds.
+
+## Security
+
+> Astro Mail Obfuscation does not sanitize HTML.
+
+Sanitize your content before obfuscation if it comes from an untrusted source (e.g., content management system, user input). For example, use [`DOMPurify`](https://github.com/cure53/DOMPurify).
+
+**Trusted Types**:
+
+If your [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP) restricts [Trusted Types](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) policy names, configure a static one:
+
+```js
+// astro.config.mjs
+mailObfuscation({
+    trustedTypesPolicyName: "tt-a7f3c9", // pass-through only; no sanitization
+});
+```
+
+> Avoid `astro-mail-obfuscation` and other obvious names. This option does not modify your CSP headers. Allow the same policy name in your `trusted-types` directive.
+
+## License
+
+[MIT](LICENSE) - (c) 2024-2026 [Andreas Brunner](https://github.com/andreas-brunner).
+
+Built in Germany.
