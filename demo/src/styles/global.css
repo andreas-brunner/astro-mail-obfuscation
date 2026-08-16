@@ -1,0 +1,65 @@
+html {
+    color-scheme: dark;
+    font-size: 20px;
+}
+
+@media (max-width: 400px) {
+    html {
+        font-size: 5vw;
+    }
+}
+
+body {
+    margin: 0;
+    background: #0d1117;
+    color: #f0f6fc;
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    line-height: 2;
+    -webkit-font-smoothing: antialiased;
+}
+
+main {
+    box-sizing: border-box;
+    min-height: 100dvh;
+    max-width: 80ch;
+    margin-inline: auto;
+    padding: 2rem;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+h1,
+p {
+    margin: 0;
+    overflow-wrap: break-word;
+}
+
+h1 {
+    text-wrap: balance;
+}
+
+main h1 {
+    margin-bottom: 1.5rem;
+}
+
+p {
+    color: #8b949e;
+    text-wrap: pretty;
+}
+
+a {
+    color: #4493f8;
+    min-height: 1lh;
+}
+
+main > a:last-child {
+    margin-bottom: 0.625rem;
+}

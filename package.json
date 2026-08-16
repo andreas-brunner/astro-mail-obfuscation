@@ -1,6 +1,6 @@
 {
     "name": "astro-mail-obfuscation",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "Protect emails, phone numbers, & other content from bots using AES-GCM obfuscation for Astro/Starlight (SSR/SSG).",
     "keywords": [
         "anti-scraping",

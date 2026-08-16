@@ -1,14 +1,22 @@
 # Astro Mail Obfuscation
 
-![npm Total Downloads](https://www.shieldcn.dev/npm/dt/astro-mail-obfuscation.svg?variant=default&size=sm&mode=dark&font=space-grotesk&labelColor=151b23&labelTextColor=9198a1&valueColor=7ee787) ![npm Version](https://www.shieldcn.dev/npm/astro-mail-obfuscation.svg?variant=default&size=sm&mode=dark&font=space-grotesk&labelColor=151b23&labelTextColor=9198a1&valueColor=a5d6ff)
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/npm/dt/astro-mail-obfuscation.svg?variant=secondary&amp;size=sm&amp;mode=dark&amp;font=space-grotesk"><img alt="npm Total Downloads" src="https://www.shieldcn.dev/npm/dt/astro-mail-obfuscation.svg?variant=secondary&amp;size=sm&amp;mode=light&amp;font=space-grotesk"></picture> <picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/npm/astro-mail-obfuscation.svg?variant=secondary&amp;size=sm&amp;mode=dark&amp;font=space-grotesk"><img alt="npm Version" src="https://www.shieldcn.dev/npm/astro-mail-obfuscation.svg?variant=secondary&amp;size=sm&amp;mode=light&amp;font=space-grotesk"></picture>
 
 > **v3**: **Rebuilt**. Advanced content obfuscator for [Astro](https://astro.build/) and [Starlight](https://starlight.astro.build/).
 
-Bots crawl the web for email addresses, phone numbers, and other sensitive data. This can result in spam emails, unwanted calls, and other forms of abuse.
+Supports SSR, SSG, [`<ClientRouter />`](https://docs.astro.build/en/guides/view-transitions/), and Trusted Types.
 
-Such abuse becomes more profitable when data is cheap to extract. Astro Mail Obfuscation disrupts this by blocking low-cost extraction paths.
+- Demo: [https://andreas-brunner.github.io/astro-mail-obfuscation/](https://andreas-brunner.github.io/astro-mail-obfuscation/)
 
-The integration uses AES-GCM and ECDSA. It works with [`<ClientRouter />`](https://docs.astro.build/en/guides/view-transitions/), SSR, and SSG. Trusted Types are supported. [`JavaScript Obfuscator`](https://github.com/javascript-obfuscator/javascript-obfuscator) randomizes the client runtime on every build, removing patterns bots rely on.
+### Background
+
+Bots crawl the web for email addresses, phone numbers, and other personal data. This can lead to spam emails, unwanted calls, and other forms of abuse (e.g., invoice fraud).
+
+Most of them take a straightforward approach. However, common obfuscation techniques (e.g., XOR, ROT13) can become predictable once their implementation patterns are known.
+
+### Approach
+
+Astro Mail Obfuscation minimizes stable patterns that bots can reuse. Each build generates new attribute names, keys, and produces a client runtime obfuscated with [JavaScript Obfuscator](https://github.com/javascript-obfuscator/javascript-obfuscator). Content is AES-GCM-encrypted and ECDSA-signed, while the client deliberately avoids exposing errors.
 
 ## Source Comparison
 
@@ -54,7 +62,7 @@ export default defineConfig({
 });
 ```
 
-**Migration from v2 to v3**:
+### Migration from v2 to v3
 
 Remove all deprecated options from `mailObfuscation()` in `astro.config.mjs`. Marker values are no longer evaluated; change `data-obfuscation="..."` to `data-obfuscation`.
 
@@ -77,13 +85,13 @@ Add the `data-obfuscation` marker to any HTML content element:
 </address>
 ```
 
+All attributes except critical ones (e.g., `id`, `class`, `style`, `hidden`) are obfuscated.
+
 > Do not nest `data-obfuscation` or include `<noscript>` in obfuscated content. Do not obfuscate `<astro-island>` or its contents, and do not use custom elements as marked roots.
 
-On the marked root element, all attributes except critical ones (e.g., `id`, `class`, `style`, `hidden`) are obfuscated.
+### Optional Configuration
 
-**Optional**:
-
-Provide a non-obfuscated fallback for users without JavaScript:
+Provide a `<noscript>` notice for users without JavaScript:
 
 ```html
 <div>
@@ -94,7 +102,7 @@ Provide a non-obfuscated fallback for users without JavaScript:
 </div>
 ```
 
-> Do not put sensitive data inside `<noscript>`; use it only for a general notice.
+> Do not put sensitive data inside `<noscript>`; use it for a general notice.
 
 To replace the default marker, set `markerAttributeName`:
 
@@ -112,39 +120,33 @@ mailObfuscation({
 ## Architecture
 
 ```mermaid
-%% Semantics < Appearance
 stateDiagram-v2
-    state "Mail_Obfuscation_Server" as Server
-    state "Mail_Obfuscation_Vite" as Vite
-    state "Mail_Obfuscation_Client" as Client
-    state "AES-GCM" as Restoration
-
-    [*] --> Server: SETUP
-    Server --> Middleware: AES_KEY + ECDSA_PRIVATE_KEY
-    Middleware --> HTML_Source: ENCRYPTED + SIGNED PAYLOAD
-    Server --> Client: AES_KEY + ECDSA_PUBLIC_KEY
-    Vite --> Client: OBFUSCATED RUNTIME
-    HTML_Source --> Client
-    Client --> BLOCKED: ECDSA:REJECTED
-    Client --> Restoration: ECDSA:VERIFIED
-    Restoration --> [*]: RESTORED
+    [*] --> Mail_Obfuscation_Server: Setup
+    Mail_Obfuscation_Server --> Middleware: AES_KEY + ECDSA_PRIVATE_KEY
+    Middleware --> HTML_Source: Payload (encrypted/signed)
+    Mail_Obfuscation_Server --> Mail_Obfuscation_Client: AES_KEY + ECDSA_PUBLIC_KEY
+    Mail_Obfuscation_Vite --> Mail_Obfuscation_Client: obfuscates
+    HTML_Source --> Mail_Obfuscation_Client
+    Mail_Obfuscation_Client --> Error: ECDSA:REJECTED
+    Mail_Obfuscation_Client --> AES_GCM: ECDSA:VERIFIED
+    AES_GCM --> [*]: restored
 ```
 
 The client runtime needs the `AES_KEY` to decrypt the payload. Because the same key can also be used to create a valid modified payload, [AES-GCM](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#aes-gcm) alone cannot verify where the payload came from.
 
-[ECDSA](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign#ecdsa) provides this verification. The client runtime receives only the `ECDSA_PUBLIC_KEY`, while the `ECDSA_PRIVATE_KEY` used to sign the initialization vector (IV) and encrypted payload remains on the build/server side.
+[ECDSA](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign#ecdsa) provides this verification. The client runtime receives only the `ECDSA_PUBLIC_KEY`; the `ECDSA_PRIVATE_KEY` remains on the build/server side.
 
-**SSR Behavior**:
+### SSR Behavior
 
 In SSR mode, HTML responses are buffered.
 
-This is required because the integration needs the complete HTML document for validation and transformation. As a result, [HTML streaming](https://docs.astro.build/en/guides/on-demand-rendering/#html-streaming) is not preserved.
+This is required because the integration needs the complete HTML document for validation and transformation. As a result, [HTML responses cannot be streamed](https://docs.astro.build/en/guides/on-demand-rendering/#html-streaming).
 
-> The middleware does not parse or reserialize marker-free HTML, and [`Cheerio`](https://github.com/cheeriojs/cheerio) is loaded lazily. All HTML responses are still inspected, and the small client runtime is injected on every page.
+> The middleware does not parse or reserialize marker-free HTML, and [Cheerio](https://github.com/cheeriojs/cheerio) is loaded lazily. All HTML responses are still inspected, and the small client runtime is injected on every page.
 
 ## Threat Model
 
-> Obfuscation is not security. Instead, it raises the cost of automated data extraction.
+Obfuscation is not security. Instead, it raises the cost of automated data extraction.
 
 Astro Mail Obfuscation protects against crawlers and scrapers that inspect raw HTML. It disrupts tools that rely on predictable patterns or static extractors.
 
@@ -152,11 +154,11 @@ Because the integration randomizes its client runtime and regenerates identifier
 
 ## Security
 
-> Astro Mail Obfuscation does not sanitize HTML.
+Astro Mail Obfuscation does not sanitize HTML.
 
-Sanitize your content before obfuscation if it comes from an untrusted source (e.g., content management system, user input). For example, use [`DOMPurify`](https://github.com/cure53/DOMPurify).
+Sanitize your content before obfuscation if it comes from an untrusted source (e.g., content management system, user input). For example, use [DOMPurify](https://github.com/cure53/DOMPurify).
 
-**Trusted Types**:
+### Trusted Types
 
 If your [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP) restricts [Trusted Types](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) policy names, configure a static one:
 

@@ -1,0 +1,34 @@
+---
+import "../styles/global.css";
+---
+
+<html lang="en">
+	<!-- "data-..." tells the client runtime: "Contains at least one marker." -->
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src data:; worker-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; trusted-types dc9r3o2;" />
+		<meta name="referrer" content="no-referrer" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="robots" content="noindex" />
+		<title>Astro Mail Obfuscation Demo</title>
+		<link rel="icon" href="data:," />
+	</head>
+	<body>
+		<main>
+			<h1>Astro Mail Obfuscation Demo</h1>
+
+			<!-- HERE -->
+			<a href="mailto:john.doe@example.com" data-obfuscation>
+				<span>john.doe@example.com</span>
+			</a>
+			<!-- HERE -->
+
+			<p>
+				Press Ctrl+U to view the source.<br />
+				Runtime: Inspect > Sources > _astro.
+			</p>
+
+			<a href="https://github.com/andreas-brunner/astro-mail-obfuscation">View on GitHub</a>
+		</main>
+	</body>
+</html>
